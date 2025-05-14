@@ -1,0 +1,20 @@
+Company name: e-service Goodies
+Company website: e-service-goodies.com
+Template website: dashboard.e-service-goodies.com
+Description:
+
+The e-service Dashboard Kit is based on real practice, has a sleek design and well-coded template. You will build your dashboard interface 10x faster with this template.
+
+- 22+ responsive pages
+
+- Figma design file included
+
+- HTML5 / CSS / SASS sources
+
+- Ready-made JS plugins (Dropzone, Chart.js, Quil.js ...)
+
+- Bootstrap 5 based
+
+- Light + Dark mode
+
+- Fast support by author

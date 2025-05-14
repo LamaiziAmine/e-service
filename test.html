@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Layout Fixe</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .navbar {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .main {
+      display: flex;
+      flex: 1;
+    }
+    .sidebar {
+      background-color: #555;
+      color: white;
+      width: 200px;
+      padding: 1rem;
+    }
+    .content {
+      flex: 1;
+      padding: 1rem;
+    }
+    .sidebar button {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">Navbar</div>
+
+<div class="main">
+  <div class="sidebar">
+    <a href="#" onclick="chargerPage('UEspage.php')">Gestion des utilisateurs</a>
+    <button onclick="loadContent('Profile')">Profile</button>
+    <button onclick="loadContent('Settings')">Settings</button>
+  </div>
+  
+  <div class="content" id="content">
+    Welcome! Click on sidebar buttons.
+  </div>
+</div>
+
+<script>
+function loadContent(page) {
+  let content = document.getElementById('content');
+  if (page === 'Home') {
+    content.innerHTML = "<h2>Home Page</h2><p>Welcome to the Home page.</p>";
+  } else if (page === 'Profile') {
+    content.innerHTML = "<h2>Profile Page</h2><p>Here is your profile.</p>";
+  } else if (page === 'Settings') {
+    content.innerHTML = "<h2>Settings Page</h2><p>Adjust your settings here.</p>";
+  }
+}
+</script>
+
+</body>
+</html>
