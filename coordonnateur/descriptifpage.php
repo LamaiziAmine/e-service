@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL); // Pour le développement
+ini_set('display_errors', 1); // Pour le développement
+
 session_start();
 $host = "localhost";
 $user = "root";
@@ -7,12 +10,96 @@ $dbname = "projet_web";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
-
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
+// Gérer l'ajout d'un module (AJAX)
+if (isset($_POST['action']) && $_POST['action'] == 'ajouter_module') {
+  // Récupérer les données du formulaire
+  $annee_univ = $_POST['annee_univ'];
+  $code_module = $_POST['code_module'];
+  $intitule = $_POST['intitule'];
+  $semestre = $_POST['semestre'];
+  $filiere = $_POST['filiere']; // Cette variable est déjà récupérée, c'est bien.
+  $cours = $_POST['cours'];
+  $td = $_POST['td'];
+  $tp = $_POST['tp'];
+  $autre = $_POST['autre'];
+  $evaluation = $_POST['evaluation'];
+  $responsable = $_POST['responsable'];
 
+  // Vérifier si le nombre de modules pour ce semestre ET CETTE FILIERE n'excède pas 7
+  // MODIFICATION ICI: Ajout de la condition sur la filière
+  $sql_check = "SELECT COUNT(*) as count FROM unités_ensignement WHERE semestre = ? AND filiere = ?";
+  $stmt_check = $conn->prepare($sql_check);
+  // MODIFICATION ICI: Ajout de $filiere au bind_param et modification du type de paramètre "s" -> "ss"
+  $stmt_check->bind_param("ss", $semestre, $filiere);
+  $stmt_check->execute();
+  $result_check = $stmt_check->get_result();
+  $row_check = $result_check->fetch_assoc();
+  $stmt_check->close(); // Bonne pratique de fermer le statement ici
+
+  if ($row_check['count'] >= 7) {
+    // Renvoyer une réponse d'erreur au format JSON
+    header('Content-Type: application/json');
+    // MODIFICATION OPTIONNELLE: Message d'erreur plus précis
+    echo json_encode(['status' => 'error', 'message' => 'Le nombre maximum de 7 modules par semestre pour la filière "' . htmlspecialchars($filiere) . '" a été atteint.']);
+    exit();
+  }
+
+  // Insérer les données dans la base de données
+  $sql = "INSERT INTO unités_ensignement (annee_univ, code_module, intitule_module, semestre, filiere, V_h_cours, V_h_TD, V_h_TP, V_h_Autre, V_h_Evaluation, responsable)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  $stmt = $conn->prepare($sql);
+  // Assurez-vous que les types ici correspondent à votre base de données (s pour string, i pour integer)
+  // Si V_h_... sont des entiers, les 'i' sont corrects.
+  $stmt->bind_param("sssssiiiiis", $annee_univ, $code_module, $intitule, $semestre, $filiere, $cours, $td, $tp, $autre, $evaluation, $responsable);
+
+  $result = $stmt->execute();
+
+  if ($result) {
+    $id = $conn->insert_id;
+    if ($id > 0) {
+      $sql_select = "SELECT * FROM unités_ensignement WHERE id = ?"; // Assurez-vous que le nom de la PK est 'id'
+      $stmt_select = $conn->prepare($sql_select);
+      $stmt_select->bind_param("i", $id);
+      $stmt_select->execute();
+      $result_select = $stmt_select->get_result();
+
+      if ($result_select && $new_row = $result_select->fetch_assoc()) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'message' => 'Module ajouté avec succès!', 'data' => $new_row]);
+      } else {
+        header('Content-Type: application/json');
+        $error_message = 'Module ajouté (ID: ' . $id . ') mais erreur lors de la récupération des données.';
+        if (!$result_select && isset($stmt_select)) { // Vérifier si stmt_select a été initialisé
+          $error_message .= ' Erreur stmt_select: ' . $stmt_select->error;
+        } elseif (!$new_row) {
+          $error_message .= ' Aucune ligne trouvée pour l\'ID récupéré.';
+        }
+        echo json_encode(['status' => 'error', 'message' => $error_message, 'inserted_id' => $id]);
+      }
+      if (isset($stmt_select))
+        $stmt_select->close();
+    } else {
+      header('Content-Type: application/json');
+      echo json_encode([
+        'status' => 'error',
+        'message' => 'Module ajouté, mais impossible de récupérer l\'ID inséré. Vérifiez la configuration AUTO_INCREMENT de la table.',
+        'sql_error' => $stmt->error
+      ]);
+    }
+  } else {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'ajout du module: ' . $stmt->error, 'sql_errno' => $stmt->errno]);
+  }
+  $stmt->close();
+  exit(); // Important
+}
+
+// Récupérer les données pour le tableau
 $sql = "SELECT * FROM unités_ensignement";
 $result = $conn->query($sql);
 ?>
@@ -248,39 +335,129 @@ $result = $conn->query($sql);
     }
 
     .table-style {
-    width: 95%;
-    margin: auto;
-    border-collapse: collapse;
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    text-align: left;
-    border: 2px solid #1e3a8a;
-    border-radius: 12px;
-    overflow: hidden; /* pour appliquer le border-radius */
-  }
+      width: 95%;
+      margin: auto;
+      border-collapse: collapse;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      text-align: left;
+      border: 2px solid #1e3a8a;
+      border-radius: 12px;
+      overflow: hidden;
+      /* pour appliquer le border-radius */
+    }
 
-  .table-style th, .table-style td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
+    .table-style th,
+    .table-style td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
 
-  .table-style thead th {
-    background-color: rgb(7, 8, 83);
-    color: white;
-  }
+    .table-style thead th {
+      background-color: rgb(7, 8, 83);
+      color: white;
+    }
 
-  .table-style tr:nth-child(even) {
-    background-color: #fff;
-  }
+    .table-style tr:nth-child(even) {
+      background-color: #fff;
+    }
 
-  .table-style tr:hover {
-    background-color: rgba(0, 42, 255, 0.14);
-  }
+    .table-style tr:hover {
+      background-color: rgba(0, 42, 255, 0.14);
+    }
 
-  h2 {
-    margin-bottom: 20px;
-    color: #333;
-  }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    @keyframes slideOut {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+    }
+
+    .alert.slide-out {
+      animation: slideOut 0.5s forwards;
+    }
+
+    /* Style pour les alertes */
+    .alert {
+      width: 94%;
+      margin: 10px auto;
+      padding: 12px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* Notification toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: #333;
+      border-left: 5px solid;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 15px 20px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(-50px);
+      transition: all 0.5s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-left-color: #28a745;
+    }
+
+    .toast.error {
+      border-left-color: #dc3545;
+    }
+
+    .toast i {
+      margin-right: 10px;
+      font-size: 24px;
+    }
+
+    .toast.success i {
+      color: #28a745;
+    }
+
+    .toast.error i {
+      color: #dc3545;
+    }
   </style>
 </head>
 
@@ -297,7 +474,30 @@ $result = $conn->query($sql);
       <?php include "navbar.php" ?>
       <!-- ! Main -->
       <main class="main users chart-page" id="skip-target">
-        <h1 style="margin-left: 20px;" class="main-title">Création d’un descriptif:</h1>
+        <h1 style="margin-left: 20px;" class="main-title">Création d'un descriptif:</h1>
+        <p style="margin-left: 15px; margin-bottom: 10px;">
+          Veuillez d'abord <span style="font-weight:bold; color:#007bff;">« Ajouter »</span> l'ensemble des unités
+          d'enseignement, puis cliquer sur
+          <span style="font-weight:bold; color:#28a745;">« Enregistrer »</span> afin de soumetre le descriptif.
+        </p><br>
+
+        <!-- Toast de notification -->
+        <div id="toast" class="toast">
+          <i class='bx bx-check-circle'></i>
+          <span id="toast-message"></span>
+        </div>
+
+        <!-- Message d'alerte -->
+        <?php if (isset($_SESSION['message'])): ?>
+          <div class="alert alert-<?= $_SESSION['msg_type'] ?>">
+            <i class="fas fa-<?= $_SESSION['msg_type'] == 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i>
+            <?php
+            echo $_SESSION['message'];
+            unset($_SESSION['message']);
+            unset($_SESSION['msg_type']);
+            ?>
+          </div>
+        <?php endif ?>
         <div class="auth-wrapper">
           <div class="auth-box" id="auth-box">
             <!-- Formulaire de descriptif -->
@@ -310,12 +510,12 @@ $result = $conn->query($sql);
               </form>
             </div>
             <div class="auth-form-container auth-importation">
-              <form id="moduleForm" method="POST" action="enregistrer.php">
+              <form id="moduleForm" method="POST" action=" ">
                 <h1>Saisir le descriptif </h1><br>
                 <span>Saisissez les informations nécessaires</span><br>
                 <div class="form-group">
                   <label>Année Universitaire :</label>
-                  <select name="annee_univ">
+                  <select name="annee_univ" required>
                     <option value="">-----Choisir l'année-----</option>
                     <option>2024/2025</option>
                     <option>2025/2026</option>
@@ -324,16 +524,16 @@ $result = $conn->query($sql);
                 </div>
                 <div class="form-group">
                   <label>Code Module :</label>
-                  <input type="text" name="code_module"><br>
+                  <input type="text" name="code_module" required><br>
                 </div>
                 <div class="form-group">
                   <label>Intitulé :</label>
-                  <input type="text" name="intitule"><br>
+                  <input type="text" name="intitule" required><br>
                 </div>
 
                 <div class="form-group">
                   <label>Semestre :</label>
-                  <select name="semestre">
+                  <select name="semestre" required>
                     <option value="">----Choisir la semestre----</option>
                     <option value="S1">S1</option>
                     <option value="S2">S2</option>
@@ -345,39 +545,39 @@ $result = $conn->query($sql);
 
                 <div class="form-group">
                   <label>Filière :</label>
-                  <input type="text" name="filiere"><br>
+                  <input type="text" name="filiere" required><br>
                 </div>
 
                 <fieldset>
                   <legend>Volume horaire: </legend>
                   <div class="form-group">
                     <label>Cours :</label>
-                    <input type="number" name="cours" min="0"><br>
+                    <input type="number" name="cours" min="0" value="0" required><br>
                   </div>
                   <div class="form-group">
                     <label>TD :</label>
-                    <input type="number" name="td" min="0"><br>
+                    <input type="number" name="td" min="0" value="0" required><br>
                   </div>
                   <div class="form-group">
                     <label>TP :</label>
-                    <input type="number" name="tp" min="0"><br>
+                    <input type="number" name="tp" min="0" value="0" required><br>
                   </div>
                   <div class="form-group">
                     <label>Autre :</label>
-                    <input type="number" name="autre" min="0"><br>
+                    <input type="number" name="autre" min="0" value="0" required><br>
                   </div>
                   <div class="form-group">
                     <label>Évaluation :</label>
-                    <input type="number" name="evaluation" min="0"><br>
+                    <input type="number" name="evaluation" min="0" value="0" required><br>
                   </div>
                 </fieldset><br>
                 <div class="form-group">
                   <label>Responsable du module :</label>
-                  <input type="text" name="responsable"><br>
+                  <input type="text" name="responsable" required><br>
                 </div>
                 <div style="display: flex; gap: 35px;">
-                  <button type="submit" id="ajouterBtn" disabled>Ajouter</button>
-                  <button type="submit">Enregistrer</button>
+                  <button type="button" id="ajouterBtn" disabled>Ajouter</button>
+                  <button type="submit" id="enregistrerBtn">Enregistrer</button>
                 </div>
               </form>
             </div>
@@ -397,10 +597,11 @@ $result = $conn->query($sql);
             </div>
           </div>
         </div><br><br>
-        <!-- Tableau لعرض البيانات -->
+
+        <!-- Tableau pour afficher les données -->
         <h2 style="margin-left: 20px;" class="main-title">Le Descriptif Actuel:</h2>
 
-        <table class="table-style">
+        <table class="table-style" id="descriptifTable">
           <thead>
             <tr>
               <th rowspan="2">Année Universitaire</th>
@@ -448,28 +649,135 @@ $result = $conn->query($sql);
     </div>
   </div>
   </div>
+
   <script>
-    const form = document.getElementById('moduleForm');
-    const ajouterBtn = document.getElementById('ajouterBtn');
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('moduleForm');
+      const ajouterBtn = document.getElementById('ajouterBtn');
+      const enregistrerBtn = document.getElementById('enregistrerBtn');
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
 
-    function checkFormFields() {
-      const inputs = form.querySelectorAll('input, select');
-      let allFilled = true;
+      // Vérifier si tous les champs sont remplis
+      function checkFormFields() {
+        const inputs = form.querySelectorAll('input[required], select[required]');
+        let allFilled = true;
 
-      inputs.forEach(input => {
-        if (input.type !== 'number' && input.value.trim() === '') {
-          allFilled = false;
-        }
+        inputs.forEach(input => {
+          if (input.value.trim() === '') {
+            allFilled = false;
+          }
+        });
+
+        ajouterBtn.disabled = !allFilled;
+      }
+
+      // Activer/désactiver le bouton Ajouter en fonction des champs
+      form.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('input', checkFormFields);
+        element.addEventListener('change', checkFormFields);
       });
 
-      ajouterBtn.disabled = !allFilled;
-    }
+      // Afficher un toast de notification
+      function showToast(message, type) {
+        toast.className = 'toast ' + type + ' show';
+        toastMessage.textContent = message;
 
-    form.querySelectorAll('input, select').forEach(element => {
-      element.addEventListener('input', checkFormFields);
-      element.addEventListener('change', checkFormFields);
+        // Modifier l'icône en fonction du type
+        const icon = toast.querySelector('i');
+        if (type === 'success') {
+          icon.className = 'bx bx-check-circle';
+        } else {
+          icon.className = 'bx bx-error-circle';
+        }
+
+        // Cacher le toast après 3 secondes
+        setTimeout(() => {
+          toast.className = 'toast';
+        }, 3000);
+      }
+
+      // Ajouter un module via AJAX
+      ajouterBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Créer un objet FormData avec les données du formulaire
+        const formData = new FormData(form);
+        formData.append('action', 'ajouter_module');
+
+        // Envoyer la requête AJAX
+        fetch(window.location.href, {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => {
+            // Vérifier si la réponse est OK
+            if (!response.ok) {
+              throw new Error('Erreur réseau');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Réponse reçue:', data); // Pour déboguer
+
+            if (data.status === 'success') {
+              // Afficher un message de succès
+              showToast(data.message, 'success');
+
+              // Ajouter la nouvelle ligne au tableau
+              const table = document.getElementById('descriptifTable');
+              const tbody = table.querySelector('tbody');
+
+              // Si le tableau est vide, supprimer le message "Aucune donnée trouvée"
+              if (tbody.innerHTML.includes('Aucune donnée trouvée')) {
+                tbody.innerHTML = '';
+              }
+
+              // Vérifier que data.data existe
+              if (data.data) {
+                // Créer une nouvelle ligne
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+            <td>${data.data.annee_univ}</td>
+            <td>${data.data.code_module}</td>
+            <td>${data.data.intitule_module}</td>
+            <td>${data.data.semestre}</td>
+            <td>${data.data.filiere}</td>
+            <td>${data.data.V_h_cours}</td>
+            <td>${data.data.V_h_TD}</td>
+            <td>${data.data.V_h_TP}</td>
+            <td>${data.data.V_h_Autre}</td>
+            <td>${data.data.V_h_Evaluation}</td>
+            <td>${data.data.responsable}</td>
+          `;
+
+                tbody.appendChild(newRow);
+              } else {
+                console.error('Les données du module sont manquantes dans la réponse');
+              }
+
+              // Réinitialiser le formulaire
+              form.reset();
+              ajouterBtn.disabled = true;
+            } else {
+              // Afficher un message d'erreur
+              showToast(data.message, 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Erreur:', error);
+            showToast('Une erreur est survenue lors de l\'ajout du module. Vérifiez la console pour plus de détails.', 'error');
+          });
+      });
+
+      // Soumission du formulaire pour enregistrer
+      form.addEventListener('submit', function (e) {
+        // Ne pas empêcher la soumission par défaut,
+        // car on veut que le formulaire soit soumis normalement
+      });
     });
   </script>
+
   <script>
     const authBox = document.getElementById('auth-box');
     const authImportationBtn = document.getElementById('auth-saisie');
@@ -480,31 +788,26 @@ $result = $conn->query($sql);
     authImportationBtn.addEventListener('click', () => {
       authBox.classList.add("active");
     });
-
-
   </script>
+
   <!-- Chart library -->
   <script src="/e-service/plugins/chart.min.js"></script>
   <!-- Icons library -->
   <script src="/e-service/plugins/feather.min.js"></script>
   <!-- Custom scripts -->
+  <script>
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) {
+        alert.classList.add('slide-out');
+        setTimeout(() => {
+          alert.remove();
+        }, 500);
+      }
+    }, 4000);
+  </script>
   <script src="/e-service/js/script.js"></script>
 </body>
-<?php
-if (isset($_SESSION['message'])):
-  ?>
-  <div
-    style="padding: 15px; margin: 15px; border-radius: 5px; background-color: <?= $_SESSION['msg_type'] === 'success' ? '#d4edda' : '#f8d7da' ?>; color: <?= $_SESSION['msg_type'] === 'success' ? '#155724' : '#721c24' ?>;">
-    <?= $_SESSION['message']; ?>
-  </div>
-  <?php
-  unset($_SESSION['message']);
-  unset($_SESSION['msg_type']);
-endif;
-?>
-
-
-
 <?php
 $conn->close();
 ?>
