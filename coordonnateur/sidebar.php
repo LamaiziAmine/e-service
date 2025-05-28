@@ -29,7 +29,7 @@
                     <a href="/e-service/coordonnateur/UEspage.php"> <span class="icon folder" aria-hidden="true"></span>Us d'enseignement </a>
                 </li>
                 <li>
-                  <a href="/e-service/coordonnateur/groupTD&TPpage.php"> <span class="icon image" aria-hidden="true"></span>Groupe TD & TP</a>
+                  <a href="/e-service/coordonnateur/groupTD&TPpage.php"> <span class="icon user-3" aria-hidden="true"></span>Groupe TD & TP</a>
                   <span class="msg-counter">1</span>
                 </li>
                 <li>
@@ -56,47 +56,13 @@
                 <a href="/e-service/coordonnateur/gestionEmploispage.php"> <span class="icon paper" aria-hidden="true"></span>Emplois du temps</a>
               </li>
             </ul>
-            <span class="system-menu__title">system</span>
+            <span class="system-menu__title">Historique</span>
             <ul class="sidebar-body-menu">
                 <li>
-                    <a href="appearance.html"><span class="icon edit" aria-hidden="true"></span>Appearance</a>
+                    <a href="appearance.html"><span class="icon edit" aria-hidden="true"></span>descriptif</a>
                 </li>
                 <li>
-                    <a class="show-cat-btn" href="##">
-                        <span class="icon category" aria-hidden="true"></span>Extentions
-                        <span class="category__btn transparent-btn" title="Open list">
-                            <span class="sr-only">Open list</span>
-                            <span class="icon arrow-down" aria-hidden="true"></span>
-                        </span>
-                    </a>
-                    <ul class="cat-sub-menu">
-                        <li>
-                            <a href="extention-01.html">Extentions-01</a>
-                        </li>
-                        <li>
-                            <a href="extention-02.html">Extentions-02</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="show-cat-btn" href="##">
-                        <span class="icon user-3" aria-hidden="true"></span>Users
-                        <span class="category__btn transparent-btn" title="Open list">
-                            <span class="sr-only">Open list</span>
-                            <span class="icon arrow-down" aria-hidden="true"></span>
-                        </span>
-                    </a>
-                    <ul class="cat-sub-menu">
-                        <li>
-                            <a href="users-01.html">Users-01</a>
-                        </li>
-                        <li>
-                            <a href="users-02.html">Users-02</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="##"><span class="icon setting" aria-hidden="true"></span>Settings</a>
+                    <a href="##"><span class="icon user-3" aria-hidden="true"></span>Affectation</a>
                 </li>
             </ul>
         </div>

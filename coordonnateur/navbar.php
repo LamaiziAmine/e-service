@@ -3,7 +3,7 @@
     <div class="main-nav-start">
       <div class="search-wrapper">
         <i data-feather="search" aria-hidden="true"></i>
-        <input type="text" placeholder="Enter keywords ..." required>
+        <input type="text" placeholder="Chercher ..." required>
       </div>
     </div>
     <div class="main-nav-end">
