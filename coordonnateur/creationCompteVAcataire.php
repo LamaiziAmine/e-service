@@ -4,7 +4,7 @@ session_start();
 $host = 'localhost';
 $db = 'projet_web';
 $user = 'root';
-$pass = ''; // mot de passe si عندك
+$pass = '';
 
 $conn = new mysqli($host, $user, $pass, $db);
 
@@ -19,7 +19,7 @@ if (isset($_GET['delete'])) {
   if ($conn->query($sql) === TRUE) {
     $_SESSION['message'] = "Vacataire supprimé avec succès!";
     $_SESSION['msg_type'] = "success";
-    header("Location: ".$_SERVER['PHP_SELF']);
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
   } else {
     $_SESSION['message'] = "Erreur lors de la suppression: " . $conn->error;
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->query($sql) === TRUE) {
       $_SESSION['message'] = "Vacataire ajouté avec succès!";
       $_SESSION['msg_type'] = "success";
-      header("Location: ".$_SERVER['PHP_SELF']);
+      header("Location: " . $_SERVER['PHP_SELF']);
       exit();
     } else {
       $_SESSION['message'] = "Erreur: " . $conn->error;
@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->query($sql) === TRUE) {
       $_SESSION['message'] = "Vacataire mis à jour avec succès!";
       $_SESSION['msg_type'] = "success";
-      header("Location: ".$_SERVER['PHP_SELF']);
+      header("Location: " . $_SERVER['PHP_SELF']);
       exit();
     } else {
       $_SESSION['message'] = "Erreur lors de la mise à jour: " . $conn->error;
@@ -254,17 +254,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     .view-btn {
-      background-color: #3498db;
+      background-color: rgb(9, 39, 232);
       color: white;
     }
 
     .edit-btn {
-      background-color: #f39c12;
+      background-color: rgb(234, 194, 18);
       color: white;
     }
 
     .delete-btn {
-      background-color: #e74c3c;
+      background-color: rgb(230, 24, 24);
       color: white;
     }
 
@@ -367,7 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       width: 150px;
       align-self: center;
     }
-    
+
     /* Style pour pagination */
     .pagination {
       display: flex;
@@ -376,11 +376,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       list-style: none;
       padding: 0;
     }
-    
+
     .pagination li {
       margin: 0 5px;
     }
-    
+
     .pagination a {
       padding: 8px 12px;
       border-radius: 4px;
@@ -389,17 +389,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       text-decoration: none;
       transition: all 0.3s;
     }
-    
+
     .pagination a.active {
       background-color: #2780FD;
       color: white;
       border-color: #2780FD;
     }
-    
+
     .pagination a:hover:not(.active) {
       background-color: #f5f5f5;
     }
-    
+
     /* Style pour la recherche */
     .search-container {
       display: flex;
@@ -408,38 +408,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       width: 94%;
       margin: 0 auto 20px;
     }
+
     
-    .search-box {
-      display: flex;
-      align-items: center;
-      width: 320px;
-      border: 1px solid #ccc;
-      border-radius: 27px;
-      padding: 5px 15px;
-      background-color: white;
-    }
-    
-    .search-box input {
-      border: none;
-      outline: none;
-      padding: 8px;
-      width: 100%;
-      background-color: white;
-    }
-    
-    .search-box i {
-      margin-right: 5px;
-    }
 
     @keyframes slideOut {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-20px); opacity: 0; }
-}
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
 
-.alert.slide-out {
-  animation: slideOut 0.5s forwards;
-}
+      100% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+    }
 
+    .alert.slide-out {
+      animation: slideOut 0.5s forwards;
+    }
   </style>
 </head>
 
@@ -457,31 +443,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <h1 style="margin-left: 20px;" class="main-title">Gestion des comptes Vacataire:</h1>
       <p style="margin-left: 15px; color:#2780FD;">Cliquer sur "Ajouter Vacataire" pour créer un compte Vacataire</p>
       <br>
-      
+
       <!-- Message d'alerte -->
       <?php if (isset($_SESSION['message'])): ?>
-        <div class="alert alert-<?=$_SESSION['msg_type']?>">
-          <i class="fas fa-<?=$_SESSION['msg_type'] == 'success' ? 'check-circle' : 'exclamation-circle'?>"></i>
-          <?php 
-            echo $_SESSION['message']; 
-            unset($_SESSION['message']);
-            unset($_SESSION['msg_type']);
+        <div class="alert alert-<?= $_SESSION['msg_type'] ?>">
+          <i class="fas fa-<?= $_SESSION['msg_type'] == 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i>
+          <?php
+          echo $_SESSION['message'];
+          unset($_SESSION['message']);
+          unset($_SESSION['msg_type']);
           ?>
         </div>
       <?php endif ?>
-      
+
       <!-- Bouton Ajouter -->
       <button onclick="openDialog()" class="btn_ajout">+ Ajouter Vacataire</button><br><br><br>
       <hr class="ligne">
-      
+
       <!-- Zone de recherche -->
-      <div class="search-container">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" placeholder="Rechercher un vacataire...">
+
+      <div class="search-container" >
+        <div class="search-wrapper" >
+          <i data-feather="search" aria-hidden="true" ></i>
+          <input type="text" style=" border: 1px solid black;" placeholder= "Chercher un vacataire..." required >
         </div>
       </div>
-      
+
       <!-- Tableau des vacataires -->
       <div class="table-container">
         <table class="vacataire-table" id="vacataireTable">
@@ -498,36 +485,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </thead>
           <tbody>
             <?php
-              // Nombre d'éléments par page
-              $items_per_page = 6;
-              
-              // Page actuelle
-              $page = isset($_GET['page']) ? $_GET['page'] : 1;
-              $start_from = ($page - 1) * $items_per_page;
-              
-              // Requête pour compter le nombre total de vacataires
-              $count_query = "SELECT COUNT(*) as total FROM vacataire";
-              $count_result = $conn->query($count_query);
-              $count_row = $count_result->fetch_assoc();
-              $total_vacataires = $count_row['total'];
-              
-              // Calcul du nombre total de pages
-              $total_pages = ceil($total_vacataires / $items_per_page);
-              
-              // Requête pour récupérer les vacataires de la page actuelle
-              $query = "SELECT * FROM vacataire ORDER BY id DESC LIMIT $start_from, $items_per_page";
-              $result = $conn->query($query);
-              
-              if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                  echo "<tr>";
-                  echo "<td>" . $row['id'] . "</td>";
-                  echo "<td>" . $row['nom'] . "</td>";
-                  echo "<td>" . $row['prenom'] . "</td>";
-                  echo "<td>" . $row['cin'] . "</td>";
-                  echo "<td>" . $row['email'] . "</td>";
-                  echo "<td>" . $row['num_tel'] . "</td>";
-                  echo "<td>
+            // Nombre d'éléments par page
+            $items_per_page = 6;
+
+            // Page actuelle
+            $page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $start_from = ($page - 1) * $items_per_page;
+
+            // Requête pour compter le nombre total de vacataires
+            $count_query = "SELECT COUNT(*) as total FROM vacataire";
+            $count_result = $conn->query($count_query);
+            $count_row = $count_result->fetch_assoc();
+            $total_vacataires = $count_row['total'];
+
+            // Calcul du nombre total de pages
+            $total_pages = ceil($total_vacataires / $items_per_page);
+
+            // Requête pour récupérer les vacataires de la page actuelle
+            $query = "SELECT * FROM vacataire ORDER BY id DESC LIMIT $start_from, $items_per_page";
+            $result = $conn->query($query);
+
+            if ($result->num_rows > 0) {
+              while ($row = $result->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $row['id'] . "</td>";
+                echo "<td>" . $row['nom'] . "</td>";
+                echo "<td>" . $row['prenom'] . "</td>";
+                echo "<td>" . $row['cin'] . "</td>";
+                echo "<td>" . $row['email'] . "</td>";
+                echo "<td>" . $row['num_tel'] . "</td>";
+                echo "<td>
                         <button class='action-btn view-btn' onclick='viewVacataire(" . $row['id'] . ")'>
                           <i class='fas fa-eye'></i> Voir
                         </button>
@@ -538,22 +525,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                           <i class='fas fa-trash'></i> Supprimer
                         </button>
                       </td>";
-                  echo "</tr>";
-                }
-              } else {
-                echo "<tr><td colspan='7' style='text-align:center;'>Aucun vacataire trouvé</td></tr>";
+                echo "</tr>";
               }
+            } else {
+              echo "<tr><td colspan='7' style='text-align:center;'>Aucun vacataire trouvé</td></tr>";
+            }
             ?>
           </tbody>
         </table>
       </div>
-      
+
       <!-- Pagination -->
       <ul class="pagination">
-        <?php for($i = 1; $i <= $total_pages; $i++): ?>
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
           <li>
-            <a href="?page=<?=$i?>" class="<?=($i == $page) ? 'active' : ''?>">
-              <?=$i?>
+            <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>">
+              <?= $i ?>
             </a>
           </li>
         <?php endfor; ?>
@@ -565,45 +552,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           style="position: absolute; top: 10px; right: 15px; background: transparent; border: none; font-size: 30px; font-weight: bold; cursor: pointer; color: #555; color: red; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">&times;
         </button>
         <form method="POST" action="">
-          <h2 style="text-align:center;"><?=$edit_state ? 'Modifier' : 'Créer'?> un compte</h2>
-          
-          <?php if($edit_state): ?>
-            <input type="hidden" name="update_id" value="<?=$update_id?>">
+          <h2 style="text-align:center;"><?= $edit_state ? 'Modifier' : 'Créer' ?> un compte</h2>
+
+          <?php if ($edit_state): ?>
+            <input type="hidden" name="update_id" value="<?= $update_id ?>">
           <?php endif; ?>
 
           <label>Nom:<span class="required">*</span></label>
-          <input type="text" name="nom" value="<?=$nom?>" required>
+          <input type="text" name="nom" value="<?= $nom ?>" required>
 
           <label>Prénom:<span class="required">*</span></label>
-          <input type="text" name="prenom" value="<?=$prenom?>" required>
+          <input type="text" name="prenom" value="<?= $prenom ?>" required>
 
           <label>Date de naissance:<span class="required">*</span></label>
-          <input type="date" name="dob" value="<?=$date_nais?>" required>
+          <input type="date" name="dob" value="<?= $date_nais ?>" required>
 
           <label>CIN:<span class="required">*</span></label>
-          <input type="text" name="cine" value="<?=$cin?>" required>
+          <input type="text" name="cine" value="<?= $cin ?>" required>
 
           <label>Sexe:<span class="required">*</span></label>
           <select name="sexe" required>
             <option value="">-- Choisir --</option>
-            <option value="Homme" <?=$sexe == 'Homme' ? 'selected' : ''?>>Homme</option>
-            <option value="Femme" <?=$sexe == 'Femme' ? 'selected' : ''?>>Femme</option>
+            <option value="Homme" <?= $sexe == 'Homme' ? 'selected' : '' ?>>Homme</option>
+            <option value="Femme" <?= $sexe == 'Femme' ? 'selected' : '' ?>>Femme</option>
           </select>
 
           <label>Numéro de téléphone:<span class="required">*</span></label>
-          <input type="tel" name="phone" value="<?=$num_tel?>" required>
+          <input type="tel" name="phone" value="<?= $num_tel ?>" required>
 
           <label>Email:<span class="required">*</span></label>
-          <input type="email" name="email" value="<?=$email?>" required>
+          <input type="email" name="email" value="<?= $email ?>" required>
 
           <label>Mot de passe:<span class="required">*</span></label>
-          <input type="text" name="password" id="generatedPassword" value="<?=$password?>" <?=$edit_state ? '' : 'readonly'?>>
-          <?php if(!$edit_state): ?>
+          <input type="text" name="password" id="generatedPassword" value="<?= $password ?>" <?= $edit_state ? '' : 'readonly' ?>>
+          <?php if (!$edit_state): ?>
             <small style="color: #777; margin-top: 2px;">Le mot de passe est généré automatiquement</small>
           <?php endif; ?>
 
           <div class="btn-group">
-            <?php if($edit_state): ?>
+            <?php if ($edit_state): ?>
               <button type="submit" class="btn-create" name="update">Mettre à jour</button>
             <?php else: ?>
               <button type="submit" class="btn-create" name="ajout">Créer</button>
@@ -611,7 +598,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </form>
       </dialog>
-      
+
       <!-- Dialog pour voir les détails d'un vacataire -->
       <dialog id="viewDetailsDialog">
         <div class="details-header">
@@ -645,19 +632,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           }
           document.getElementById("generatedPassword").value = pass;
         }
-        
+
         // Fonction pour éditer un vacataire
         function editVacataire(id) {
           window.location.href = `?edit=${id}`;
         }
-        
+
         // Fonction pour supprimer un vacataire avec confirmation
         function deleteVacataire(id) {
           if (confirm("Êtes-vous sûr de vouloir supprimer ce vacataire ?")) {
             window.location.href = `?delete=${id}`;
           }
         }
-        
+
         // Fonction pour voir les détails d'un vacataire
         function viewVacataire(id) {
           // Requête AJAX pour récupérer les détails
@@ -703,10 +690,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="detail-value">${data.mot_de_passe}</div>
                 </div>
               `;
-              
+
               // Injection du HTML dans le dialogue
               document.getElementById('vacataireDetails').innerHTML = detailsHTML;
-              
+
               // Ouverture du dialogue
               document.getElementById('viewDetailsDialog').showModal();
             })
@@ -715,58 +702,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               alert('Erreur lors de la récupération des détails du vacataire');
             });
         }
-        
+
         // Fonction de recherche
-        document.getElementById('searchInput').addEventListener('keyup', function() {
+        document.getElementById('searchInput').addEventListener('keyup', function () {
           const searchTerm = this.value.toLowerCase();
           const table = document.getElementById('vacataireTable');
           const rows = table.getElementsByTagName('tr');
-          
+
           // Pour chaque ligne sauf l'en-tête
           for (let i = 1; i < rows.length; i++) {
             let found = false;
             const cells = rows[i].getElementsByTagName('td');
-            
+
             // Parcourir toutes les cellules sauf celle des actions
             for (let j = 0; j < cells.length - 1; j++) {
               const cellText = cells[j].textContent.toLowerCase();
-              
+
               if (cellText.includes(searchTerm)) {
                 found = true;
                 break;
               }
             }
-            
+
             rows[i].style.display = found ? '' : 'none';
           }
         });
-        
+
         // Ouvrir le dialogue si on est en mode édition
-        <?php if($edit_state): ?>
-          window.onload = function() {
+        <?php if ($edit_state): ?>
+          window.onload = function () {
             document.getElementById('accountDialog').showModal();
           }
         <?php endif; ?>
       </script>
     </div>
   </div>
-  
+
   <!-- Chart library -->
   <script src="/e-service/plugins/chart.min.js"></script>
   <!-- Icons library -->
   <script src="/e-service/plugins/feather.min.js"></script>
   <!-- Custom scripts -->
-   <script>
-  setTimeout(() => {
-    const alert = document.querySelector('.alert');
-    if (alert) {
-      alert.classList.add('slide-out');
-      setTimeout(() => {
-        alert.remove();
-      }, 500); // مدة animation = 0.5s
-    }
-  }, 4000); // تبقى 5 ثواني قبل ما تبدا animation
-</script>
+  <script>
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) {
+        alert.classList.add('slide-out');
+        setTimeout(() => {
+          alert.remove();
+        }, 500);
+      }
+    }, 4000); 
+  </script>
 
 
   <script src="/e-service/js/script.js"></script>
