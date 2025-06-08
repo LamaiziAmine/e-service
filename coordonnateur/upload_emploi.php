@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['emploi_pdf']) && iss
     if ($stmt->rowCount() > 0) {
       echo json_encode([
         'status' => 'success',
-        'message' => "✅ PDF importé avec succès pour la filière $filiere.",
+        'message' => " PDF importé avec succès pour la filière $filiere.",
         'pdf_url' => $dbPath // On ajoute cette information cruciale
       ]);
     } else {

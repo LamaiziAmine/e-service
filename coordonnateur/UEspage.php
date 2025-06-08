@@ -84,7 +84,6 @@ $result = $conn->query($sql);
               <th rowspan="2">Semestre</th>
               <th rowspan="2">Filière</th>
               <th colspan="5" style="text-align:center;">Volume Horaire</th>
-              <th rowspan="2">Responsable</th>
               <th rowspan="2">Actions</th>
             </tr>
             <tr>
@@ -109,7 +108,6 @@ $result = $conn->query($sql);
                 echo "<td>" . $row['V_h_TP'] . "</td>";
                 echo "<td>" . $row['V_h_Autre'] . "</td>";
                 echo "<td>" . $row['V_h_Evaluation'] . "</td>";
-                echo "<td>" . $row['responsable'] . "</td>";
                 echo "</tr>";
               }
             } else {

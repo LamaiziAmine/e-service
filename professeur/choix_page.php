@@ -16,13 +16,24 @@ if ($conn->connect_error) {
 // ====================================================================
 // Remplacez 'prof_id' par la variable de session qui contient l'ID unique du professeur.
 //if (!isset($_SESSION['prof_id'])) {
-    // Si vous n'avez pas de système de connexion, vous pouvez définir un ID fixe pour tester :
-    // $_SESSION['prof_id'] = 1; 
-    // Mais en production, la ligne die() est nécessaire pour la sécurité.
-  //  die("Accès refusé. Vous devez être connecté en tant que professeur.");
+// Si vous n'avez pas de système de connexion, vous pouvez définir un ID fixe pour tester :
+// $_SESSION['prof_id'] = 1; 
+// Mais en production, la ligne die() est nécessaire pour la sécurité.
+//  die("Accès refusé. Vous devez être connecté en tant que professeur.");
 //}
 //$professeur_id = $_SESSION['prof_id'];
 // ====================================================================
+
+$_SESSION['prof_id'] = 1;
+
+// On vérifie maintenant que la session existe (bonne pratique)
+if (!isset($_SESSION['prof_id'])) {
+    die("Accès refusé. Vous devez être connecté en tant que professeur.");
+}
+
+// On assigne la valeur à la variable utilisée dans les requêtes
+$professeur_id = $_SESSION['prof_id'];
+
 
 
 // --- GESTIONNAIRE DE REQUÊTES AJAX POUR ENREGISTRER LES SOUHAITS ---
@@ -205,18 +216,19 @@ $result = $stmt->get_result();
         <div class="main-wrapper">
             <?php include "../coordonnateur/navbar.php" ?><br>
             <h2 style="margin-left: 20px;" class="main-title">Sélection des souhaits d'enseignement</h2>
-            <p style="margin-left: 20px; margin-bottom: 25px; max-width: 90%; color: rgb(12, 90, 246);">Cochez les modules que vous souhaitez
+            <p style="margin-left: 20px; margin-bottom: 25px; max-width: 90%; color: rgb(12, 90, 246);">Cochez les
+                modules que vous souhaitez
                 enseigner cette année. Votre charge horaire totale est calculée automatiquement en bas de l'écran.</p>
 
-             <table class="table-style">
+            <table class="table-style">
                 <thead>
                     <tr>
-                        <th style="text-align: center;"><input type="checkbox" id="select-all" title="Tout sélectionner/désélectionner"></th>
+                        <th style="text-align: center;"><input type="checkbox" id="select-all"
+                                title="Tout sélectionner/désélectionner"></th>
                         <th>Intitulé du Module</th>
                         <th>Semestre</th>
                         <th>Filière</th>
-                        <th style="text-align: center;">Volume Horaire Total</th>
-                        <th>Responsable Actuel</th>
+                        <th>Volume Horaire Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -226,7 +238,7 @@ $result = $stmt->get_result();
                             // Le calcul du VH Total reste, car on en a besoin pour le data-attribute
                             $vh_total = $row['V_h_cours'] + $row['V_h_TD'] + $row['V_h_TP'] + $row['V_h_Autre'] + $row['V_h_Evaluation'];
                             $est_coche = $row['est_selectionne'] ? 'checked' : '';
-                            
+
                             echo "<tr>";
                             // 1. Case à cocher (inchangée)
                             echo "<td style='text-align: center;'><input type='checkbox' class='module-checkbox' value='" . $row['id'] . "' data-heures='" . $vh_total . "' " . $est_coche . "></td>";
@@ -238,8 +250,6 @@ $result = $stmt->get_result();
                             echo "<td>" . htmlspecialchars($row['filiere']) . "</td>";
                             // 5. Volume Horaire Total (maintenant la seule colonne de volume)
                             echo "<td class='vh-total-cell'>" . $vh_total . "h</td>";
-                            // 6. Responsable (inchangé)
-                            echo "<td>" . htmlspecialchars($row['responsable']) . "</td>";
                             echo "</tr>";
                         }
                     } else {
@@ -357,6 +367,7 @@ $result = $stmt->get_result();
     <script src="/e-service/js/script.js"></script>
 
 </body>
+
 </html>
 <?php
 $conn->close();

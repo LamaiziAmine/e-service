@@ -571,10 +571,6 @@ $result = $conn->query($sql);
                     <input type="number" name="evaluation" min="0" value="0" required><br>
                   </div>
                 </fieldset><br>
-                <div class="form-group">
-                  <label>Responsable du module :</label>
-                  <input type="text" name="responsable" required><br>
-                </div>
                 <div style="display: flex; gap: 35px;">
                   <button type="button" id="ajouterBtn" disabled>Ajouter</button>
                   <button type="submit" id="enregistrerBtn">Enregistrer</button>
@@ -610,7 +606,6 @@ $result = $conn->query($sql);
               <th rowspan="2">Semestre</th>
               <th rowspan="2">Filière</th>
               <th colspan="5" style="text-align:center;">Volume Horaire</th>
-              <th rowspan="2">Responsable</th>
             </tr>
             <tr>
               <th>Cours</th>
@@ -635,7 +630,6 @@ $result = $conn->query($sql);
                 echo "<td>" . $row['V_h_TP'] . "</td>";
                 echo "<td>" . $row['V_h_Autre'] . "</td>";
                 echo "<td>" . $row['V_h_Evaluation'] . "</td>";
-                echo "<td>" . $row['responsable'] . "</td>";
                 echo "</tr>";
               }
             } else {
@@ -748,7 +742,6 @@ $result = $conn->query($sql);
             <td>${data.data.V_h_TP}</td>
             <td>${data.data.V_h_Autre}</td>
             <td>${data.data.V_h_Evaluation}</td>
-            <td>${data.data.responsable}</td>
           `;
 
                 tbody.appendChild(newRow);
