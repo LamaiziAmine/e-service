@@ -1,15 +1,33 @@
 <?php
-session_start();
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "projet_web";
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+// 1. DÉMARRER LA SESSION
+// Doit être la toute première chose pour accéder à $_SESSION.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+
+// 2. VÉRIFICATION DE SÉCURITÉ ET DES RÔLES
+// Si l'utilisateur n'est pas connecté OU si son rôle n'est pas 'professeur',
+// on le redirige vers la page de connexion.
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'professeur') {
+    header("Location: ../login.php");
+    exit; 
+}
+
+// 3. RÉCUPÉRATION DES INFORMATIONS DE L'UTILISATEUR
+// On stocke les informations de la session dans des variables claires.
+$professeur_id = $_SESSION['user_id'];
+$professeur_nom_complet = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Professeur';
+
+
+// 4. CONNEXION À LA BASE DE DONNÉES
+// Ce bloc établit la connexion pour le reste de la page.
+$host = 'localhost';
+$db = 'projet_web';
+$user = 'root';
+$pass = '';
+
+$conn = new mysqli($host, $user, $pass, $db);
+
 
 $sql = "SELECT * FROM unités_ensignement";
 $result = $conn->query($sql);
@@ -84,7 +102,6 @@ $result = $conn->query($sql);
               <th rowspan="2">Semestre</th>
               <th rowspan="2">Filière</th>
               <th colspan="5" style="text-align:center;">Volume Horaire</th>
-              <th rowspan="2">Responsable</th>
               <th rowspan="2">Actions</th>
             </tr>
             <tr>
@@ -109,7 +126,6 @@ $result = $conn->query($sql);
                 echo "<td>" . $row['V_h_TP'] . "</td>";
                 echo "<td>" . $row['V_h_Autre'] . "</td>";
                 echo "<td>" . $row['V_h_Evaluation'] . "</td>";
-                echo "<td>" . $row['responsable'] . "</td>";
                 echo "</tr>";
               }
             } else {

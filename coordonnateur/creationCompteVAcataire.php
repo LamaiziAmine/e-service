@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 $host = 'localhost';
 $db = 'projet_web';
 $user = 'root';
@@ -11,6 +12,7 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
   die("Erreur de connexion: " . $conn->connect_error);
 }
+
 
 // Fonction pour supprimer un vacataire
 if (isset($_GET['delete'])) {

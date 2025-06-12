@@ -20,21 +20,20 @@
         <div class="sidebar-body">
             <ul class="sidebar-body-menu">
                 <li>
-                    <a class="active" href="/e-service/home.php"><span class="icon home" aria-hidden="true"></span>Accuil</a>
+                    <a class="<?= ($currentPage == 'prof_dashboard.php') ? 'active' : '' ?>" href="/e-service/professeur/prof_dashboard.php"><span class="icon home" aria-hidden="true"></span>Accuil</a>
                 </li>
                 <li>
-                    <a href="/e-service/professeur/UEspage.php"> <span class="icon folder" aria-hidden="true"></span>Us d'enseignement </a>
+                    <a href="/e-service/professeur/UEspage.php" class="<?= ($currentPage == 'UEspage.php') ? 'active' : '' ?>"> <span class="icon folder" aria-hidden="true"></span>Us d'enseignement </a>
                 </li>
                 <li>
-                  <a href="/e-service/coordonnateur/groupTD&TPpage.php"> <span class="icon user-3" aria-hidden="true"></span>Groupe TD & TP</a>
-                  <span class="msg-counter">1</span>
+                  <a href="/e-service/professeur/choix_page.php" class="<?= ($currentPage == 'choix_page.php') ? 'active' : '' ?>"> <span class="icon paper" aria-hidden="true"></span>Choix des UEs</a>
                 </li>
                 <li>
-                  <a href="/e-service/professeur/choix_page.php"> <span class="icon paper" aria-hidden="true"></span>Choix des UEs</a>
+                  <a href="/e-service/professeur/consultation_page.php" class="<?= ($currentPage == 'consultation_page.php') ? 'active' : '' ?>"> <span class="icon paper" aria-hidden="true"></span>Consulter UEs</a>
                 </li>
                 <li>
                   <a class="show-cat-btn" href="##">
-                      <span class="icon category" aria-hidden="true"></span>Gestion vacataires
+                      <span class="icon category" aria-hidden="true"></span>Uploder note
                       <span class="category__btn transparent-btn" title="Ouvrir liste">
                           <span class="sr-only">Ouvrir liste</span>
                           <span class="icon arrow-down" aria-hidden="true"></span>
@@ -42,28 +41,21 @@
                   </a>
                   <ul class="cat-sub-menu">
                       <li>
-                          <a href="/e-service/coordonnateur/creationCompteVAcataire.php">créer compte</a>
+                          <a href="/e-service/professeur/session_normale_page.php" class="<?= ($currentPage == 'session_normale_page.php') ? 'active' : '' ?>">Session normale</a>
                       </li>
                       <li>
-                          <a href="/e-service/coordonnateur/affectationVacataire.php">affecter</a>
+                          <a href="/e-service/professeur/session_rattrapage_page.php" class="<?= ($currentPage == 'session_rattrapage_page.php') ? 'active' : '' ?>">Session rattrapage</a>
                       </li>
                   </ul>
               </li>
               <li>
-                <a href="/e-service/coordonnateur/gestionEmploispage.php"> <span class="icon paper" aria-hidden="true"></span>Emplois du temps</a>
-              </li>
-            </ul>
-            <span class="system-menu__title">Historique</span>
-            <ul class="sidebar-body-menu">
-                <li>
-                    <a href="appearance.html"><span class="icon edit" aria-hidden="true"></span>descriptif</a>
-                </li>
-                <li>
-                    <a href="##"><span class="icon user-3" aria-hidden="true"></span>Affectation</a>
-                </li>
+                <a href="/e-service/professeur/historique_page.php" class="<?= ($currentPage == 'historique_page.php') ? 'active' : '' ?>">
+                    <span class="icon edit" aria-hidden="true"></span>
+                    Historique
+                </a>
+            </li>
             </ul>
         </div>
     </div>
-    
 </aside>
     <!-- ! Main nav -->

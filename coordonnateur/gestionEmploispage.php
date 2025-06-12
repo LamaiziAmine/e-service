@@ -42,13 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
   exit; // TRÈS IMPORTANT: Arrête l'exécution du script ici.
 }
-// ===================================================================
-// FIN DU GESTIONNAIRE AJAX
-// ===================================================================
-
-
-// Le reste de votre code PHP continue normalement...
-// Récupérer les filières pour afficher le tableau
 $filieres = $db->query("SELECT nom, emploi_pdf FROM promotion")->fetchAll();
 ?>
 
