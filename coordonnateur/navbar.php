@@ -90,7 +90,7 @@
             </a></li>
           <li><a class="danger" href="../logout.php">
               <i data-feather="log-out" aria-hidden="true"></i>
-              <span>Log out</span>
+              <span>se déconnecter</span>
             </a></li>
         </ul>
       </div>

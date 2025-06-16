@@ -65,15 +65,365 @@ $result = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/e-service/img/svg/logo.svg" type="image/x-icon">
     <link rel="stylesheet" href="/e-service/css/style.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .main-content { padding: 20px; }
-        .container-vacant {
-            padding: 25px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 12px 48px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .table-vacant thead { background-color: #343a40; color: white; }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .page-flex {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            padding: 0;
+        }
+
+        .main-content {
+            padding: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container-vacant {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container-vacant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .filter-section {
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .filter-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .filter-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-vacant {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .table-vacant thead {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .table-vacant thead th {
+            border: none;
+            padding: 1.2rem 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .table-vacant tbody tr {
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-vacant tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .table-vacant tbody td {
+            padding: 1.2rem 1rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .badge:hover::before {
+            left: 100%;
+        }
+
+        .badge.bg-warning {
+            background: var(--warning-gradient) !important;
+            color: white !important;
+            border: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+
+        .stats-card {
+            background: var(--success-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 20%, transparent 20%);
+            background-size: 20px 20px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .container-vacant {
+                padding: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .filter-section {
+                padding: 1.5rem;
+            }
+            
+            .table-responsive {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+        }
+
+        /* Animation pour l'apparition des lignes du tableau */
+        .table-vacant tbody tr {
+            animation: slideInLeft 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .table-vacant tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        .table-vacant tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        .table-vacant tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        .table-vacant tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        .table-vacant tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -84,50 +434,112 @@ $result = $stmt->get_result();
     include "../sidebar.php"; 
     ?>
     <div class="main-wrapper">
-        <?php include "../navbar.php"; ?><br>
-        <main class="main users" id="skip-target">
+        <?php include "../navbar.php"; ?>
+        <main class="main users main-content" id="skip-target">
             <div class="container-vacant">
-                <h2 class="text-primary mb-4">Unités d'Enseignement Vacantes</h2>
-                <p class="text-muted mb-4">Cette page liste toutes les interventions (Cours, TD, TP) qui n'ont pas encore été affectées à un enseignant dans votre département.</p>
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-graduation-cap me-3"></i>
+                        Unités d'Enseignement Vacantes
+                    </h1>
+                    <p class="page-subtitle">
+                        Découvrez toutes les interventions (Cours, TD, TP) qui n'ont pas encore été affectées à un enseignant dans votre département.
+                    </p>
+                </div>
 
-                <form method="get" class="row g-3 align-items-end mb-4 p-3 bg-light border rounded">
-                    <div class="col-md-6">
-                        <label for="code" class="form-label">Filtrer par code de module :</label>
-                        <input type="text" name="code" id="code" class="form-control" value="<?= htmlspecialchars($code_filter) ?>" placeholder="Ex: UE101" />
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="vacantes.php" class="btn btn-secondary w-100">Réinitialiser</a>
-                    </div>
-                </form>
+                <?php 
+                $total_vacant = $result ? $result->num_rows : 0;
+                if ($total_vacant > 0):
+                ?>
+                <div class="stats-card">
+                    <div class="stats-number"><?= $total_vacant ?></div>
+                    <div class="stats-label">Interventions Vacantes</div>
+                </div>
+                <?php endif; ?>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-vacant">
-                        <thead>
-                            <tr>
-                                <th>Code Module</th>
-                                <th>Intitulé du Module</th>
-                                <th>Type d'intervention non affecté</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if ($result && $result->num_rows > 0): ?>
-                                <?php while ($row = $result->fetch_assoc()): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($row['code_module']) ?></td>
-                                        <td><?= htmlspecialchars($row['intitule_module']) ?></td>
-                                        <td><span class="badge bg-warning text-dark"><?= htmlspecialchars($row['type_enseignement']) ?></span></td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            <?php else: ?>
+                <div class="filter-section">
+                    <div class="filter-title">
+                        <i class="fas fa-filter"></i>
+                        Filtres de recherche
+                    </div>
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="code" class="form-label">
+                                <i class="fas fa-search me-2"></i>
+                                Filtrer par code de module
+                            </label>
+                            <input type="text" name="code" id="code" class="form-control" value="<?= htmlspecialchars($code_filter) ?>" placeholder="Ex: UE101, INFO, MATH..." />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>
+                                Filtrer
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="vacantes.php" class="btn btn-secondary w-100">
+                                <i class="fas fa-undo me-2"></i>
+                                Réinitialiser
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-vacant">
+                            <thead>
                                 <tr>
-                                    <td colspan="3" class="text-center p-4">Félicitations ! Toutes les interventions ont été affectées dans votre département.</td>
+                                    <th>
+                                        <i class="fas fa-code me-2"></i>
+                                        Code Module
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-book me-2"></i>
+                                        Intitulé du Module
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-chalkboard-teacher me-2"></i>
+                                        Type d'intervention
+                                    </th>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php if ($result && $result->num_rows > 0): ?>
+                                    <?php while ($row = $result->fetch_assoc()): ?>
+                                        <tr>
+                                            <td>
+                                                <strong><?= htmlspecialchars($row['code_module']) ?></strong>
+                                            </td>
+                                            <td><?= htmlspecialchars($row['intitule_module']) ?></td>
+                                            <td>
+                                                <span class="badge bg-warning">
+                                                    <?php
+                                                    $type = htmlspecialchars($row['type_enseignement']);
+                                                    $icon = '';
+                                                    switch($type) {
+                                                        case 'Cours': $icon = 'fas fa-chalkboard'; break;
+                                                        case 'TD': $icon = 'fas fa-users'; break;
+                                                        case 'TP': $icon = 'fas fa-flask'; break;
+                                                    }
+                                                    echo "<i class='$icon me-2'></i>$type";
+                                                    ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="empty-state">
+                                            <i class="fas fa-check-circle"></i>
+                                            <h3>Excellent travail !</h3>
+                                            <p>Toutes les interventions ont été affectées dans votre département.</p>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -136,5 +548,20 @@ $result = $stmt->get_result();
 
 <script src="/e-service/plugins/feather.min.js"></script>
 <script src="/e-service/js/script.js"></script>
+<script>
+    // Animation d'apparition progressive
+    document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('.container-vacant > *');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                el.style.transition = 'all 0.6s ease-out';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
 </body>
 </html>

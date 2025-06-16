@@ -18,24 +18,10 @@
         <div class="sidebar-body">
             <ul class="sidebar-body-menu">
 
-                <!-- Choix -->
-                <li>
-                    <a class="show-cat-btn" href="##">
-                        <span class="icon document" aria-hidden="true"></span>Choix
-                        <span class="category__btn transparent-btn" title="Ouvrir liste">
-                            <span class="sr-only">Ouvrir liste</span>
-                            <span class="icon arrow-down" aria-hidden="true"></span>
-                        </span>
-                    </a>
-                    <ul class="cat-sub-menu">
-                        <li><a href="/e-service/chefdepart/Choix/choix_professeurs.php">Choix Professeurs</a></li>
-                        <li><a href="/e-service/chefdepart/Choix/valider_choix.php">Valider Choix</a></li>
-                    </ul>
-                </li>
-
+                
                 <!-- Historique -->
                 <li>
-                    <a href="/e-service/chefdepart/Historique/">
+                    <a href="/e-service/chefdepart/Historique/historique_affectations.php">
                         <span class="icon folder" aria-hidden="true"></span>Historique
                     </a>
                 </li>
@@ -50,12 +36,12 @@
                         </span>
                     </a>
                     <ul class="cat-sub-menu">
-                        <li><a href="/e-service/chefdepart/Professeur/index.php">Tableau de bord</a></li>
+                        
                         <li><a href="/e-service/chefdepart/Professeur/affecter.php">Affecter</a></li>
                         <li><a href="/e-service/chefdepart/Professeur/charge_horaire.php">Charge Horaire</a></li>
                         <li><a href="/e-service/chefdepart/Professeur/gestion_affectations.php">Gestion des Affectations</a></li>
                         
-                        <li><a href="/e-service/chefdepart/Professeur/traiter_validation.php">Valider Affectation</a></li>
+                        
                     </ul>
                 </li>
 
@@ -76,47 +62,13 @@
 
                 <!-- Reporting -->
                 <li>
-                    <a href="/e-service/chefdepart/Reporting/">
+                    <a href="/e-service/chefdepart/Reporting/reporting.php">
                         <span class="icon paper" aria-hidden="true"></span>Reporting
                     </a>
                 </li>
             </ul>
 
-            <span class="system-menu__title">system</span>
-            <ul class="sidebar-body-menu">
-                <li>
-                    <a href="appearance.html"><span class="icon edit" aria-hidden="true"></span>Appearance</a>
-                </li>
-                <li>
-                    <a class="show-cat-btn" href="##">
-                        <span class="icon category" aria-hidden="true"></span>Extentions
-                        <span class="category__btn transparent-btn" title="Open list">
-                            <span class="sr-only">Open list</span>
-                            <span class="icon arrow-down" aria-hidden="true"></span>
-                        </span>
-                    </a>
-                    <ul class="cat-sub-menu">
-                        <li><a href="extention-01.html">Extentions-01</a></li>
-                        <li><a href="extention-02.html">Extentions-02</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="show-cat-btn" href="##">
-                        <span class="icon user-3" aria-hidden="true"></span>Users
-                        <span class="category__btn transparent-btn" title="Open list">
-                            <span class="sr-only">Open list</span>
-                            <span class="icon arrow-down" aria-hidden="true"></span>
-                        </span>
-                    </a>
-                    <ul class="cat-sub-menu">
-                        <li><a href="users-01.html">Users-01</a></li>
-                        <li><a href="users-02.html">Users-02</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="##"><span class="icon setting" aria-hidden="true"></span>Settings</a>
-                </li>
-            </ul>
+            
         </div>
     </div>
 </aside>

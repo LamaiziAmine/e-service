@@ -632,7 +632,8 @@ $result = $stmt->get_result();
         }
     </script>
 
-    <script src="/e-service/plugins/feather.min.js"></script>
-    <script src="/e-service/js/script.js"></script>
+    <script src="/e-service/plugins/chart.min.js"></script>
+  <script src="/e-service/plugins/feather.min.js"></script>
+  <script src="/e-service/js/script.js"></script>
 </body>
 </html>

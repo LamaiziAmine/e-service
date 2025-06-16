@@ -22,11 +22,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <div class="sidebar-body">
             <!-- Give the menu a unique ID for our JavaScript to find it -->
             <ul class="sidebar-body-menu" id="admin-sidebar-menu">
-                <li>
-                    <a href="#" class="<?= ($currentPage == 'dashboard.php') ? 'active' : '' ?>">
-                        <span class="icon dashboard" aria-hidden="true"></span>Tableau de bord
-                    </a>
-                </li>
+               
                 <li>
                     <a href="/e-service/admin/profcompte.php" class="<?= ($currentPage == 'profcompte.php') ? 'active' : '' ?>">
                         <span class="icon user-3" aria-hidden="true"></span>Gestion des Comptes
@@ -38,7 +34,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         <span class="icon folder" aria-hidden="true"></span>Affecter Responsabilités
                     </a>
                 </li>
+            
+                
             </ul>
+            
         </div>
     </div>
 </aside>
