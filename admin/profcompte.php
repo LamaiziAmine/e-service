@@ -13,8 +13,8 @@ if ($conn->connect_error) {
 }
 
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-  header("Location: ../login.php");
-  exit;
+    header("Location: ../login.php");
+    exit;
 }
 
 // Fonction pour supprimer un professeur
@@ -23,7 +23,7 @@ if (isset($_GET['delete'])) {
   $sql = "DELETE FROM users WHERE id = ? AND role = 'professeur'";
   $stmt = $conn->prepare($sql);
   $stmt->bind_param("i", $id);
-
+  
   if ($stmt->execute()) {
     $_SESSION['message'] = "Professeur supprimé avec succès!";
     $_SESSION['msg_type'] = "success";
@@ -49,7 +49,7 @@ if (isset($_GET['edit'])) {
   $stmt->bind_param("i", $update_id);
   $stmt->execute();
   $result = $stmt->get_result();
-
+  
   if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
     $nom = $row['nom'];
@@ -79,21 +79,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $department_id = !empty($_POST['department_id']) ? intval($_POST['department_id']) : null;
-
+    
     // Vérifier si l'email existe déjà
     $check_email = "SELECT id FROM users WHERE email = ?";
     $stmt_check = $conn->prepare($check_email);
     $stmt_check->bind_param("s", $email);
     $stmt_check->execute();
     $result_check = $stmt_check->get_result();
-
+    
     if ($result_check->num_rows > 0) {
       $_SESSION['message'] = "Cet email est déjà utilisé!";
       $_SESSION['msg_type'] = "error";
     } else {
       // Hacher le mot de passe
       $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
+      
       $sql = "INSERT INTO users (email, password, role, department_id, nom, prenom) 
               VALUES (?, ?, 'professeur', ?, ?, ?)";
       $stmt = $conn->prepare($sql);
@@ -120,14 +120,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $department_id = !empty($_POST['department_id']) ? intval($_POST['department_id']) : null;
-
+    
     // Vérifier si l'email existe déjà pour un autre utilisateur
     $check_email = "SELECT id FROM users WHERE email = ? AND id != ?";
     $stmt_check = $conn->prepare($check_email);
     $stmt_check->bind_param("si", $email, $id);
     $stmt_check->execute();
     $result_check = $stmt_check->get_result();
-
+    
     if ($result_check->num_rows > 0) {
       $_SESSION['message'] = "Cet email est déjà utilisé par un autre utilisateur!";
       $_SESSION['msg_type'] = "error";
@@ -488,20 +488,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="layer"></div>
   <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
   <div class="page-flex">
-
+    
     <!-- ! Intégration de la nouvelle Sidebar -->
     <?php include "sidebar.php"; ?>
-
+    
     <div class="main-wrapper">
-
+      
       <!-- ! Intégration de la nouvelle Navbar -->
       <?php include "navbar.php"; ?>
-
+      
       <main class="main-content">
         <!-- ! Main -->
         <h1 style="margin-left: 20px;" class="main-title">Gestion des comptes Professeur:</h1>
-        <p style="margin-left: 15px; color:#2780FD;">Cliquer sur "Ajouter Professeur" pour créer un compte Professeur
-        </p>
+        <p style="margin-left: 15px; color:#2780FD;">Cliquer sur "Ajouter Professeur" pour créer un compte Professeur</p>
         <br>
 
         <!-- Message d'alerte -->
@@ -524,8 +523,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="search-container">
           <div class="search-wrapper">
             <i data-feather="search" aria-hidden="true"></i>
-            <input type="text" id="searchInput" style="border: 1px solid black;" placeholder="Chercher un professeur..."
-              required>
+            <input type="text" id="searchInput" style="border: 1px solid black;" placeholder="Chercher un professeur..." required>
           </div>
         </div>
 
@@ -600,15 +598,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Pagination -->
         <?php if ($total_pages > 1): ?>
-          <ul class="pagination">
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-              <li>
-                <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>">
-                  <?= $i ?>
-                </a>
-              </li>
-            <?php endfor; ?>
-          </ul>
+        <ul class="pagination">
+          <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <li>
+              <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>">
+                <?= $i ?>
+              </a>
+            </li>
+          <?php endfor; ?>
+        </ul>
         <?php endif; ?>
       </main>
 
@@ -677,33 +675,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', function() {
           // Find the sidebar menu by its ID
           const sidebarMenu = document.getElementById('admin-sidebar-menu');
 
           if (sidebarMenu) {
-            // Get all the links inside the menu
-            const menuLinks = sidebarMenu.querySelectorAll('a');
+              // Get all the links inside the menu
+              const menuLinks = sidebarMenu.querySelectorAll('a');
 
-            // Add a click listener to each link
-            menuLinks.forEach(function (link) {
-              link.addEventListener('click', function () {
-                // 1. Remove 'active' class from all links first
-                menuLinks.forEach(function (innerLink) {
-                  innerLink.classList.remove('active');
-                });
+              // Add a click listener to each link
+              menuLinks.forEach(function(link) {
+                  link.addEventListener('click', function() {
+                      // 1. Remove 'active' class from all links first
+                      menuLinks.forEach(function(innerLink) {
+                          innerLink.classList.remove('active');
+                      });
 
-                // 2. Add 'active' class to the link that was just clicked
-                this.classList.add('active');
+                      // 2. Add 'active' class to the link that was just clicked
+                      this.classList.add('active');
+                  });
               });
-            });
           }
-        });
+      });
         // Fonctions de base pour le dialogue
         function openDialog() {
           document.getElementById('accountDialog').showModal();
           <?php if (!$edit_state): ?>
-            generatePassword();
+          generatePassword();
           <?php endif; ?>
         }
 
@@ -727,9 +725,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Fonction pour supprimer un professeur avec confirmation
         function deleteProfesseur(id) {
-          if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
-            window.location.href = `/e-service/admin/profcompte.php?delete=${id}`;
-          }
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+                window.location.href = `/e-service/admin/profcompte.php?delete=${id}`;
+            }
         }
 
         // Fonction pour voir les détails d'un professeur
@@ -824,10 +822,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
     }, 4000); 
   </script>
-  <script src="/e-service/plugins/chart.min.js"></script>
-  <!-- Icons library -->
-  <script src="/e-service/plugins/feather.min.js"></script>
-  <!-- Custom scripts -->
+
   <script src="/e-service/js/script.js"></script>
 </body>
 

@@ -244,6 +244,5 @@ window.onload = resetFormToAddState;
 </script>
 <script src="/e-service/plugins/feather.min.js"></script>
 <script src="/e-service/js/script.js"></script>
-<script src="/e-service/plugins/chart.min.js"></script>
 </body>
 </html>

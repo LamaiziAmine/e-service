@@ -1,17 +1,5 @@
 <?php
-$currentPage = basename($_SERVER['PHP_SELF']);
-$pagesGestionVacataires = ['creationCompteVAcataire.php', 'affectationVacataire.php'];
-$isGestionVacatairesActive = in_array($currentPage, $pagesGestionVacataires);
-
-
 session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'cordonnateur') {
-    header("Location: ../login.php");
-    exit; 
-}
-
-$coordonateur_id = $_SESSION['user_id'];
 
 $host = 'localhost';
 $db = 'projet_web';
@@ -24,11 +12,10 @@ if ($conn->connect_error) {
   die("Erreur de connexion: " . $conn->connect_error);
 }
 
-
 // Fonction pour supprimer un vacataire
 if (isset($_GET['delete'])) {
   $id = $_GET['delete'];
-  $sql = "DELETE FROM users WHERE id = $id";
+  $sql = "DELETE FROM vacataire WHERE id = $id";
   if ($conn->query($sql) === TRUE) {
     $_SESSION['message'] = "Vacataire supprimé avec succès!";
     $_SESSION['msg_type'] = "success";
@@ -41,20 +28,24 @@ if (isset($_GET['delete'])) {
 }
 
 // Récupération des données pour édition
-$nom = $prenom = $email = $password = "";
+$nom = $prenom = $date_nais = $cin = $sexe = $num_tel = $email = $password = "";
 $edit_state = false;
 $update_id = 0;
 
 if (isset($_GET['edit'])) {
   $edit_state = true;
   $update_id = $_GET['edit'];
-  $result = $conn->query("SELECT * FROM users WHERE id = $update_id");
+  $result = $conn->query("SELECT * FROM vacataire WHERE id = $update_id");
   if ($result->num_rows == 1) {
     $row = $result->fetch_array();
     $nom = $row['nom'];
     $prenom = $row['prenom'];
+    $date_nais = $row['date_naissance'];
+    $cin = $row['cin'];
+    $sexe = $row['sexe'];
+    $num_tel = $row['num_tel'];
     $email = $row['email'];
-    $password = $row['password'];
+    $password = $row['mot_de_passe'];
   }
 }
 
@@ -63,17 +54,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (isset($_POST['ajout'])) {
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
+    $date_nais = $_POST['dob'];
+    $cin = $_POST['cine'];
+    $sexe = $_POST['sexe'];
+    $num_tel = $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $role = 'vacataire';
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    $cordonnateur_id = $_SESSION['user_id'];
-    $dep_result = $conn->query("SELECT department_id FROM users WHERE id = $cordonnateur_id");
-    $dep_row = $dep_result->fetch_assoc();
-    $departement_id = $dep_row['department_id'];
 
-    $sql = "INSERT INTO users(nom, prenom, email, password, role, department_id)
-          VALUES ('$nom', '$prenom', '$email', '$hashedPassword', '$role', '$departement_id')";
+    $sql = "INSERT INTO vacataire(nom, prenom, date_naissance, cin, sexe, num_tel, email, mot_de_passe)
+            VALUES ('$nom', '$prenom', '$date_nais', '$cin', '$sexe', '$num_tel', '$email', '$password')";
 
     if ($conn->query($sql) === TRUE) {
       $_SESSION['message'] = "Vacataire ajouté avec succès!";
@@ -90,10 +79,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['update_id'];
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
+    $date_nais = $_POST['dob'];
+    $cin = $_POST['cine'];
+    $sexe = $_POST['sexe'];
+    $num_tel = $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $sql = "UPDATE users SET nom='$nom', prenom='$prenom', email='$email', password='$password' 
+    $sql = "UPDATE vacataire SET nom='$nom', prenom='$prenom', date_naissance='$date_nais', 
+            cin='$cin', sexe='$sexe', num_tel='$num_tel', email='$email', mot_de_passe='$password' 
             WHERE id=$id";
 
     if ($conn->query($sql) === TRUE) {
@@ -218,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     .vacataire-table thead {
-      background-color: rgb(25, 60, 255);
+      background-color: #2780FD;
       color: white;
     }
 
@@ -313,11 +307,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     /* Style pour la boîte de détails */
     #viewDetailsDialog {
-      width: 40%;
+      width: 50%;
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      height: 65%;
     }
 
     .details-header {
@@ -363,7 +356,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     .close-details {
-      background-color: rgb(25, 60, 255);
+      background-color: #2780FD;
       color: white;
       border: none;
       border-radius: 5px;
@@ -416,7 +409,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       margin: 0 auto 20px;
     }
 
-
+    
 
     @keyframes slideOut {
       0% {
@@ -469,10 +462,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <!-- Zone de recherche -->
 
-      <div class="search-container">
-        <div class="search-wrapper">
-          <i data-feather="search" aria-hidden="true"></i>
-          <input type="text" style=" border: 1px solid black;" placeholder="Chercher un vacataire..." required>
+      <div class="search-container" >
+        <div class="search-wrapper" >
+          <i data-feather="search" aria-hidden="true" ></i>
+          <input type="text" style=" border: 1px solid black;" placeholder= "Chercher un vacataire..." required >
         </div>
       </div>
 
@@ -484,7 +477,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <th>ID</th>
               <th>Nom</th>
               <th>Prénom</th>
+              <th>CIN</th>
               <th>Email</th>
+              <th>Téléphone</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -498,7 +493,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $start_from = ($page - 1) * $items_per_page;
 
             // Requête pour compter le nombre total de vacataires
-            $count_query = "SELECT COUNT(*) as total FROM users WHERE role = 'vacataire'";
+            $count_query = "SELECT COUNT(*) as total FROM vacataire";
             $count_result = $conn->query($count_query);
             $count_row = $count_result->fetch_assoc();
             $total_vacataires = $count_row['total'];
@@ -507,7 +502,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $total_pages = ceil($total_vacataires / $items_per_page);
 
             // Requête pour récupérer les vacataires de la page actuelle
-            $query = "SELECT * FROM users WHERE role = 'vacataire' ORDER BY id DESC LIMIT $start_from, $items_per_page";
+            $query = "SELECT * FROM vacataire ORDER BY id DESC LIMIT $start_from, $items_per_page";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
@@ -516,7 +511,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<td>" . $row['id'] . "</td>";
                 echo "<td>" . $row['nom'] . "</td>";
                 echo "<td>" . $row['prenom'] . "</td>";
+                echo "<td>" . $row['cin'] . "</td>";
                 echo "<td>" . $row['email'] . "</td>";
+                echo "<td>" . $row['num_tel'] . "</td>";
                 echo "<td>
                         <button class='action-btn view-btn' onclick='viewVacataire(" . $row['id'] . ")'>
                           <i class='fas fa-eye'></i> Voir
@@ -566,6 +563,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
           <label>Prénom:<span class="required">*</span></label>
           <input type="text" name="prenom" value="<?= $prenom ?>" required>
+
+          <label>Date de naissance:<span class="required">*</span></label>
+          <input type="date" name="dob" value="<?= $date_nais ?>" required>
+
+          <label>CIN:<span class="required">*</span></label>
+          <input type="text" name="cine" value="<?= $cin ?>" required>
+
+          <label>Sexe:<span class="required">*</span></label>
+          <select name="sexe" required>
+            <option value="">-- Choisir --</option>
+            <option value="Homme" <?= $sexe == 'Homme' ? 'selected' : '' ?>>Homme</option>
+            <option value="Femme" <?= $sexe == 'Femme' ? 'selected' : '' ?>>Femme</option>
+          </select>
+
+          <label>Numéro de téléphone:<span class="required">*</span></label>
+          <input type="tel" name="phone" value="<?= $num_tel ?>" required>
 
           <label>Email:<span class="required">*</span></label>
           <input type="email" name="email" value="<?= $email ?>" required>
@@ -653,10 +666,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="detail-value">${data.prenom}</div>
                 </div>
                 <div class="detail-item">
+                  <span class="detail-label">Date de naissance:</span>
+                  <div class="detail-value">${data.date_naissance}</div>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">CIN:</span>
+                  <div class="detail-value">${data.cin}</div>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Sexe:</span>
+                  <div class="detail-value">${data.sexe}</div>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Téléphone:</span>
+                  <div class="detail-value">${data.num_tel}</div>
+                </div>
+                <div class="detail-item">
                   <span class="detail-label">Email:</span>
                   <div class="detail-value">${data.email}</div>
                 </div>
-                
+                <div class="detail-item">
+                  <span class="detail-label">Mot de passe:</span>
+                  <div class="detail-value">${data.mot_de_passe}</div>
+                </div>
               `;
 
               // Injection du HTML dans le dialogue

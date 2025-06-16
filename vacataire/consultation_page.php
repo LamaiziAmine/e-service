@@ -5,14 +5,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // 2. VÉRIFICATION DE SÉCURITÉ : Doit être un professeur connecté
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'professeur') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'vacataire') {
     header("Location: /e-service/login.php");
     exit;
 }
 
 // 3. RÉCUPÉRATION DES INFORMATIONS UTILES DE LA SESSION
 // On utilise directement l'ID de l'utilisateur connecté. C'est plus sûr.
-$professeur_id = $_SESSION['user_id'];
+$vacataire_id = $_SESSION['user_id'];
 
 $host = "localhost";
 $user = "root";
@@ -25,7 +25,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'professeur') {
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'vacataire') {
     header("Location: ../login.php");
     exit;
 }
@@ -54,7 +54,7 @@ $sql = "SELECT
             ue.id"; // Group all results for the same module into one row
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $professeur_id);
+$stmt->bind_param("i", $vacataire_id);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -85,7 +85,7 @@ $result = $stmt->get_result();
     <div class="layer"></div>
     <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
     <div class="page-flex">
-        <?php include "sidebar_prof.php"; ?>
+        <?php include "sidebar_vacataire.php"; ?>
         <div class="main-wrapper">
             <?php include "../coordonnateur/navbar.php"; ?><br>
             <main class="main users" id="skip-target">

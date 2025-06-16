@@ -1,6 +1,4 @@
 <?php
-$currentPage = basename($_SERVER['PHP_SELF']);
-
 error_reporting(E_ALL); // Pour le développement
 ini_set('display_errors', 1); // Pour le développement
 
@@ -16,12 +14,6 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'cordonnateur') {
-    header("Location: ../login.php");
-    exit; 
-}
-
-$coordonateur_id = $_SESSION['user_id'];
 // Gérer l'ajout d'un module (AJAX)
 if (isset($_POST['action']) && $_POST['action'] == 'ajouter_module') {
   // Récupérer les données du formulaire

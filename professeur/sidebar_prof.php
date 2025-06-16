@@ -29,7 +29,7 @@
                   <a href="/e-service/professeur/choix_page.php" class="<?= ($currentPage == 'choix_page.php') ? 'active' : '' ?>"> <span class="icon paper" aria-hidden="true"></span>Choix des UEs</a>
                 </li>
                 <li>
-                  <a href="/e-service/professeur/consultation_page.php" class="<?= ($currentPage == 'consultation_page.php') ? 'active' : '' ?>"> <span class="icon paper" aria-hidden="true"></span>Consulter UEs</a>
+                  <a href="/e-service/professeur/consultation_page.php" class="<?= ($currentPage == 'consultation_page.php') ? 'active' : '' ?>"> <span class="icon paper" aria-hidden="true"></span>Consulter UEs assurés</a>
                 </li>
                 <li>
                   <a class="show-cat-btn" href="##">

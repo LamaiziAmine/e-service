@@ -8,9 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-service | ENSAH</title>
   <!-- Favicon -->
-  <link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
-  <!-- Custom styles -->
-  <link rel="stylesheet" href="./css/style.min.css">
+  <link rel="shortcut icon" href="/e-service/img/svg/logo.svg" type="image/x-icon">
+  <link rel="stylesheet" href="/e-service/css/style.min.css">
 </head>
 
 <body>
@@ -19,10 +18,10 @@
   <a class="skip-link sr-only" href="#skip-target">Skip to content</a>
   <div class="page-flex">
     <!-- ! Sidebar -->
-    <?php include "coordonnateur/sidebar.php" ?>
+    <?php include "sidebar_vacataire.php" ?>
     <div class="main-wrapper">
       <!-- ! Main nav -->
-      <?php include "coordonnateur/navbar.php" ?>
+      <?php include "../coordonnateur/navbar.php" ?>
       <!-- ! Main -->
       <main class="main users chart-page" id="skip-target">
         <div class="container">
@@ -318,11 +317,10 @@
     </div>
   </div>
   <!-- Chart library -->
-  <script src="./plugins/chart.min.js"></script>
-  <!-- Icons library -->
-  <script src="plugins/feather.min.js"></script>
-  <!-- Custom scripts -->
-  <script src="js/script.js"></script>
+  <script src="/e-service/plugins/chart.min.js"></script>
+  <script src="/e-service/plugins/feather.min.js"></script>
+  <script src="/e-service/js/script.js"></script>
+</body>
 </body>
 
 </html>

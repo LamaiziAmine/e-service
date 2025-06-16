@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         header('Location: /e-service/professeur/UEspage.php');
                         exit;
                     case 'vacataire':
-                        header('Location: dashboard_vacataire.php');
+                        header('Location: /e-service/vacataire/home_vacataire.php');
                         exit;
                     case 'admin':
                         header('Location: /e-service/admin/profcompte.php');

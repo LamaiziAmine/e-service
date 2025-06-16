@@ -13,18 +13,12 @@ if ($conn->connect_error) {
   die("Erreur de connexion: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'cordonnateur') {
-    header("Location: ../login.php");
-    exit; 
-}
-
-$coordonateur_id = $_SESSION['user_id'];
 // Vérifier si l'ID est fourni
 if (isset($_GET['id'])) {
   $id = $_GET['id'];
   
   // Requête pour récupérer les détails du vacataire
-  $sql = "SELECT * FROM users WHERE id = $id";
+  $sql = "SELECT * FROM vacataire WHERE id = $id";
   $result = $conn->query($sql);
   
   if ($result->num_rows > 0) {

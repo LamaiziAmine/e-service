@@ -1,6 +1,4 @@
 <?php
-session_start();
- $currentPage = basename($_SERVER['PHP_SELF']); 
 // Connexion à ta DB (votre code existant)
 try {
   $db = new PDO('mysql:host=localhost;dbname=projet_web;charset=utf8', 'root', '');
@@ -9,13 +7,10 @@ try {
   echo "Erreur de connexion : " . $e->getMessage();
   die();
 }
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'cordonnateur') {
-    header("Location: ../login.php");
-    exit; 
-}
 
-$coordonateur_id = $_SESSION['user_id'];
-
+// ===================================================================
+// GESTIONNAIRE DE REQUÊTES AJAX (LOGIQUE DE SUPPRESSION INTÉGRÉE ICI)
+// ===================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_timetable') {
   header('Content-Type: application/json');
   $filiere = $_POST['filiere'];
@@ -47,6 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
   exit; // TRÈS IMPORTANT: Arrête l'exécution du script ici.
 }
+// ===================================================================
+// FIN DU GESTIONNAIRE AJAX
+// ===================================================================
+
+
+// Le reste de votre code PHP continue normalement...
+// Récupérer les filières pour afficher le tableau
 $filieres = $db->query("SELECT nom, emploi_pdf FROM promotion")->fetchAll();
 ?>
 
