@@ -35,7 +35,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'ajouter_module') {
   $tp = $_POST['tp'];
   $autre = $_POST['autre'];
   $evaluation = $_POST['evaluation'];
-  $responsable = $_POST['responsable'];
+ 
 
   // Vérifier si le nombre de modules pour ce semestre ET CETTE FILIERE n'excède pas 7
   // MODIFICATION ICI: Ajout de la condition sur la filière
@@ -57,13 +57,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'ajouter_module') {
   }
 
   // Insérer les données dans la base de données
-  $sql = "INSERT INTO unités_ensignement (annee_univ, code_module, intitule_module, semestre, filiere, V_h_cours, V_h_TD, V_h_TP, V_h_Autre, V_h_Evaluation, responsable)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  $sql = "INSERT INTO unités_ensignement (annee_univ, code_module, intitule_module, semestre, filiere, V_h_cours, V_h_TD, V_h_TP, V_h_Autre, V_h_Evaluation)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   $stmt = $conn->prepare($sql);
   // Assurez-vous que les types ici correspondent à votre base de données (s pour string, i pour integer)
   // Si V_h_... sont des entiers, les 'i' sont corrects.
-  $stmt->bind_param("sssssiiiiis", $annee_univ, $code_module, $intitule, $semestre, $filiere, $cours, $td, $tp, $autre, $evaluation, $responsable);
+  $stmt->bind_param("sssssiiiii", $annee_univ, $code_module, $intitule, $semestre, $filiere, $cours, $td, $tp, $autre, $evaluation);
 
   $result = $stmt->execute();
 

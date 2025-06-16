@@ -26,10 +26,9 @@ $sql_choix = "
     FROM choix_ues c
     JOIN users u ON c.id_professeur = u.id
     JOIN unités_ensignement ue ON c.id_module = ue.id
-    WHERE ue.department_id = ?
+    WHERE ue.department_id = '1'
     ORDER BY u.nom ASC, ue.code_module ASC";
 $stmt_choix = $connection->prepare($sql_choix);
-$stmt_choix->bind_param("i", $department_id);
 $stmt_choix->execute();
 $choix_result = $stmt_choix->get_result();
 
@@ -380,7 +379,7 @@ $connection->close();
             font-weight: 700;
             color: var(--text-primary);
             font-size: 1.1rem;
-            background: linear-gradient(45deg, #fff, #e0e0ff);
+            background: linear-gradient(45deg, #fff,rgb(0, 0, 0));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
